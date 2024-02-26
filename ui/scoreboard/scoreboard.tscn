@@ -16,21 +16,15 @@ func _enter_tree():
 		add_child(e)
 "
 
-[sub_resource type="GDScript" id="GDScript_m473a"]
-resource_name = "add"
+[sub_resource type="GDScript" id="GDScript_3yxjh"]
+resource_name = "back"
 script/source = "extends Button
 
 func _ready():
-	pressed.connect(_p)
+	pressed.connect(_on_pressed)
 
-func _p():
-	var username = \"username%s\" % Scoreboard.scores.size()
-	var score = str(randi())
-	Scoreboard.add_score(username, score)
-	var e = $\"../../ScrollContainer/VBoxContainer\".entry.instantiate() as Entry
-	e.username = username
-	e.score = score
-	$\"../../ScrollContainer/VBoxContainer\".add_child(e)
+func _on_pressed():
+	get_tree().change_scene_to_file(\"res://ui/main_menu/main_menu.tscn\")
 "
 
 [node name="Scoreboard" type="Control"]
@@ -74,8 +68,8 @@ layout_mode = 2
 size_flags_vertical = 0
 collapsed = true
 
-[node name="Button" type="Button" parent="VSplitContainer/HSplitContainer"]
+[node name="Back" type="Button" parent="VSplitContainer/HSplitContainer"]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 text = "BACK"
-script = SubResource("GDScript_m473a")
+script = SubResource("GDScript_3yxjh")
