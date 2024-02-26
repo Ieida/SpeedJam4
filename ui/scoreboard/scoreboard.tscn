@@ -1,0 +1,81 @@
+[gd_scene load_steps=4 format=3 uid="uid://cmw0m68js1li8"]
+
+[ext_resource type="PackedScene" uid="uid://hbti1ixktpdk" path="res://ui/scoreboard/entry/entry.tscn" id="1_cup04"]
+
+[sub_resource type="GDScript" id="GDScript_pspou"]
+resource_name = "scores"
+script/source = "extends VBoxContainer
+
+@export var entry: PackedScene
+
+func _enter_tree():
+	for i in Scoreboard.scores.size():
+		var e = entry.instantiate() as Entry
+		e.username = Scoreboard.scores.keys()[i]
+		e.score = Scoreboard.scores.values()[i]
+		add_child(e)
+"
+
+[sub_resource type="GDScript" id="GDScript_m473a"]
+resource_name = "add"
+script/source = "extends Button
+
+func _ready():
+	pressed.connect(_p)
+
+func _p():
+	var username = \"username%s\" % Scoreboard.scores.size()
+	var score = str(randi())
+	Scoreboard.add_score(username, score)
+	var e = $\"../../ScrollContainer/VBoxContainer\".entry.instantiate() as Entry
+	e.username = username
+	e.score = score
+	$\"../../ScrollContainer/VBoxContainer\".add_child(e)
+"
+
+[node name="Scoreboard" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VSplitContainer" type="VSplitContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+collapsed = true
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VSplitContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VSplitContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+script = SubResource("GDScript_pspou")
+entry = ExtResource("1_cup04")
+
+[node name="HSplitContainer" type="HSplitContainer" parent="VSplitContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+collapsed = true
+
+[node name="Button" type="Button" parent="VSplitContainer/HSplitContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+text = "BACK"
+script = SubResource("GDScript_m473a")
