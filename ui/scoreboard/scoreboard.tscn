@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=3 uid="uid://cmw0m68js1li8"]
+[gd_scene load_steps=5 format=3 uid="uid://cmw0m68js1li8"]
 
 [ext_resource type="PackedScene" uid="uid://hbti1ixktpdk" path="res://ui/scoreboard/entry/entry.tscn" id="1_cup04"]
 
@@ -9,11 +9,34 @@ script/source = "extends VBoxContainer
 @export var entry: PackedScene
 
 func _enter_tree():
+	Scoreboard.score_added.connect(_on_scoreboard_score_added)
+	Scoreboard.cleared.connect(_on_scoreboard_cleared)
 	for i in Scoreboard.scores.size():
-		var e = entry.instantiate() as Entry
-		e.username = Scoreboard.scores.keys()[i]
-		e.score = Scoreboard.scores.values()[i]
-		add_child(e)
+		add_entry(Scoreboard.scores.keys()[i], Scoreboard.scores.values()[i])
+
+func _on_scoreboard_score_added():
+	add_entry(Scoreboard.scores.keys().back(), Scoreboard.scores.values().back())
+
+func _on_scoreboard_cleared():
+	for child in get_children():
+		remove_child(child)
+
+func add_entry(username: String, score: String):
+	var e = entry.instantiate() as Entry
+	e.username = username
+	e.score = score
+	add_child(e)
+"
+
+[sub_resource type="GDScript" id="GDScript_0gjv5"]
+resource_name = "clear"
+script/source = "extends Button
+
+func _ready():
+	pressed.connect(_on_pressed)
+
+func _on_pressed():
+	Scoreboard.clear()
 "
 
 [sub_resource type="GDScript" id="GDScript_3yxjh"]
@@ -67,6 +90,12 @@ entry = ExtResource("1_cup04")
 layout_mode = 2
 size_flags_vertical = 0
 collapsed = true
+
+[node name="Clear" type="Button" parent="VSplitContainer/HSplitContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+text = "CLEAR"
+script = SubResource("GDScript_0gjv5")
 
 [node name="Back" type="Button" parent="VSplitContainer/HSplitContainer"]
 custom_minimum_size = Vector2(0, 50)

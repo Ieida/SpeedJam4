@@ -1,5 +1,8 @@
 extends Node
 
+signal score_added
+signal cleared
+
 var scores: Dictionary
 
 func _enter_tree():
@@ -28,3 +31,8 @@ func save_to_disk():
 
 func add_score(username: String, score: String):
 	scores[username] = score
+	score_added.emit()
+
+func clear():
+	scores.clear()
+	cleared.emit()
