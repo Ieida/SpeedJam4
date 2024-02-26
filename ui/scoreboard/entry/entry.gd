@@ -1,4 +1,4 @@
-extends SplitContainer
+extends HBoxContainer
 class_name Entry
 
 var username: String

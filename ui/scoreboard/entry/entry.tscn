@@ -2,9 +2,8 @@
 
 [ext_resource type="Script" path="res://ui/scoreboard/entry/entry.gd" id="1_mqv0m"]
 
-[node name="Entry" type="SplitContainer"]
+[node name="Entry" type="HBoxContainer"]
 size_flags_horizontal = 2
-collapsed = true
 script = ExtResource("1_mqv0m")
 
 [node name="Username" type="Label" parent="."]
@@ -12,6 +11,14 @@ layout_mode = 2
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 40
 text = "username"
+vertical_alignment = 1
+uppercase = true
+
+[node name="Separator" type="Label" parent="."]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 40
+text = ":"
 vertical_alignment = 1
 uppercase = true
 

@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://cmw0m68js1li8"]
+[gd_scene load_steps=6 format=3 uid="uid://cmw0m68js1li8"]
 
 [ext_resource type="PackedScene" uid="uid://hbti1ixktpdk" path="res://ui/scoreboard/entry/entry.tscn" id="1_cup04"]
 
@@ -50,6 +50,23 @@ func _on_pressed():
 	get_tree().change_scene_to_file(\"res://ui/main_menu/main_menu.tscn\")
 "
 
+[sub_resource type="GDScript" id="GDScript_qfeiy"]
+resource_name = "add"
+script/source = "extends Button
+
+func _enter_tree():
+	if not OS.is_debug_build():
+		hide()
+
+func _ready():
+	pressed.connect(_on_pressed)
+
+func _on_pressed():
+	var u = \"debug%s\" % Scoreboard.scores.size()
+	var s = str(randi())
+	Scoreboard.add_score(u, s)
+"
+
 [node name="Scoreboard" type="Control"]
 layout_mode = 3
 anchors_preset = 15
@@ -86,19 +103,24 @@ size_flags_vertical = 0
 script = SubResource("GDScript_pspou")
 entry = ExtResource("1_cup04")
 
-[node name="HSplitContainer" type="HSplitContainer" parent="VSplitContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VSplitContainer"]
 layout_mode = 2
-size_flags_vertical = 0
-collapsed = true
+alignment = 1
 
-[node name="Clear" type="Button" parent="VSplitContainer/HSplitContainer"]
-custom_minimum_size = Vector2(0, 50)
+[node name="Clear" type="Button" parent="VSplitContainer/HBoxContainer"]
+custom_minimum_size = Vector2(384, 50)
 layout_mode = 2
 text = "CLEAR"
 script = SubResource("GDScript_0gjv5")
 
-[node name="Back" type="Button" parent="VSplitContainer/HSplitContainer"]
-custom_minimum_size = Vector2(0, 50)
+[node name="Back" type="Button" parent="VSplitContainer/HBoxContainer"]
+custom_minimum_size = Vector2(384, 50)
 layout_mode = 2
 text = "BACK"
 script = SubResource("GDScript_3yxjh")
+
+[node name="Add" type="Button" parent="VSplitContainer/HBoxContainer"]
+custom_minimum_size = Vector2(384, 50)
+layout_mode = 2
+text = "ADD"
+script = SubResource("GDScript_qfeiy")
