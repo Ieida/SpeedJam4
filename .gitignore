@@ -2,4 +2,4 @@
 .godot/
 
 # Personal ignores
-builds/
+.builds/
