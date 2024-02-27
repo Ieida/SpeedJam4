@@ -1,0 +1,126 @@
+[gd_scene load_steps=6 format=3 uid="uid://cmw0m68js1li8"]
+
+[ext_resource type="PackedScene" uid="uid://hbti1ixktpdk" path="res://ui/scoreboard/entry/entry.tscn" id="1_cup04"]
+
+[sub_resource type="GDScript" id="GDScript_pspou"]
+resource_name = "scores"
+script/source = "extends VBoxContainer
+
+@export var entry: PackedScene
+
+func _enter_tree():
+	Scoreboard.score_added.connect(_on_scoreboard_score_added)
+	Scoreboard.cleared.connect(_on_scoreboard_cleared)
+	for i in Scoreboard.scores.size():
+		add_entry(Scoreboard.scores.keys()[i], Scoreboard.scores.values()[i])
+
+func _on_scoreboard_score_added():
+	add_entry(Scoreboard.scores.keys().back(), Scoreboard.scores.values().back())
+
+func _on_scoreboard_cleared():
+	for child in get_children():
+		remove_child(child)
+
+func add_entry(username: String, score: String):
+	var e = entry.instantiate() as Entry
+	e.username = username
+	e.score = score
+	add_child(e)
+"
+
+[sub_resource type="GDScript" id="GDScript_0gjv5"]
+resource_name = "clear"
+script/source = "extends Button
+
+func _ready():
+	pressed.connect(_on_pressed)
+
+func _on_pressed():
+	Scoreboard.clear()
+"
+
+[sub_resource type="GDScript" id="GDScript_3yxjh"]
+resource_name = "back"
+script/source = "extends Button
+
+func _ready():
+	pressed.connect(_on_pressed)
+
+func _on_pressed():
+	get_tree().change_scene_to_file(\"res://ui/main_menu/main_menu.tscn\")
+"
+
+[sub_resource type="GDScript" id="GDScript_qfeiy"]
+resource_name = "add"
+script/source = "extends Button
+
+func _enter_tree():
+	if not OS.is_debug_build():
+		hide()
+
+func _ready():
+	pressed.connect(_on_pressed)
+
+func _on_pressed():
+	var u = \"debug%s\" % Scoreboard.scores.size()
+	var s = str(randi())
+	Scoreboard.add_score(u, s)
+"
+
+[node name="Scoreboard" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VSplitContainer" type="VSplitContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+collapsed = true
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VSplitContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VSplitContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+script = SubResource("GDScript_pspou")
+entry = ExtResource("1_cup04")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VSplitContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="Clear" type="Button" parent="VSplitContainer/HBoxContainer"]
+custom_minimum_size = Vector2(384, 50)
+layout_mode = 2
+text = "CLEAR"
+script = SubResource("GDScript_0gjv5")
+
+[node name="Back" type="Button" parent="VSplitContainer/HBoxContainer"]
+custom_minimum_size = Vector2(384, 50)
+layout_mode = 2
+text = "BACK"
+script = SubResource("GDScript_3yxjh")
+
+[node name="Add" type="Button" parent="VSplitContainer/HBoxContainer"]
+custom_minimum_size = Vector2(384, 50)
+layout_mode = 2
+text = "ADD"
+script = SubResource("GDScript_qfeiy")
